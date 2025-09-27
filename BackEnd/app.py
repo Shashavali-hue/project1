@@ -1,16 +1,15 @@
- 
-# 1. Import the Flask class from the flask module
-from flask import Flask
-
-# 2. Create an instance of the Flask class
-#    '_name_' tells Flask where to look for resources
+from flask import Flask,url_for 
 app = Flask(__name__)
 
-# 3. Define a route for the homepage ("/")
-#    This decorator tells Flask that the function below
-#    should be triggered when someone visits the main URL.
+
 @app.route('/')
-def hello_world():
-    # 4. The function that returns the response to the browser
-#    should be triggered when someone visits the main URL.
-    return 'welcome to vedait<br>hi shashavali'
+def index():
+    profile_url = url_for('show_user_profile', username='dave')
+    return f'<a href="{profile_url}">View Dave\'s Profile</a>'
+
+@app.route('/user/<username>')
+def show_user_profile(username):
+    return f'Profile page for {username}'
+
+if __name__ == "__main__":
+    app.run(debug=True)
