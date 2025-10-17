@@ -6,7 +6,7 @@ from sqlalchemy import inspect, text
 app = Flask(__name__) 
 
 SERVER_NAME = 'LAPTOP-U4A1A9M1'
-DATABASE_NAME = 'College' 
+DATABASE_NAME = 'project'  
 
 CONNECTION_STRING = (
     f"mssql+pyodbc://@{SERVER_NAME}/{DATABASE_NAME}?"
