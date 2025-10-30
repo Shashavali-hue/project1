@@ -1,4 +1,17 @@
-import pandas as pd
+import pandas as pd 
+# 1. Create a sample DataFrame
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie', 'David'],
+    'Age': [25, 30, 35, 40],
+    'City': ['New York', 'Los Angeles', 'Chicago', 'Houston'],
+    'Salary': [70000, 80000, 90000, 100000]
+}
+
+df = pd.DataFrame(data)
+
+print("--- 1. Original DataFrame ---")
+print(df)
+print("\n")
 file_path_alt = r"C:\Users\Shashavali\Downloads\sem_wise_marks.csv"
 
 try:
