@@ -34,4 +34,5 @@ def index():
     return "Welcome to the Flask App with SQL Server!"   
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True) 
+#testing done
