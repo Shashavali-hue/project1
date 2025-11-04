@@ -1,7 +1,7 @@
-import numpy as np 
+import numpy as np
 
-arr_e = np.linspace(0, 10, 4)  
-print(arr_e)
-
+# Creates a 3x3 Identity Matrix
+I_3x3 = np.identity(3)
+print(I_3x3) 
 
 
