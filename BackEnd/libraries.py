@@ -1,6 +1,7 @@
 import numpy as np 
 
-# Create array using arange
-arr_d = np.arange(0, 10, 3)
-print(arr_d)
+arr_e = np.linspace(0, 10, 4)  
+print(arr_e)
+
+
 
