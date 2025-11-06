@@ -1,38 +1,78 @@
-from flask import Flask
+from flask import Flask, request, redirect, url_for, render_template_string
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# --- NEW CONFIGURATION FOR SQL SERVER ---
-
-# Your server and database details
-SERVER_NAME = 'LAPTOP-U4A1A9M1'
-DATABASE_NAME = 'my_flask_app' # Make sure this database exists on your server!
-
-# The connection string for Windows Authentication
-# It specifies the driver and tells it to use a trusted connection
-CONNECTION_STRING = (
-    f"mssql+pyodbc://@{SERVER_NAME}/{DATABASE_NAME}?"
-    f"driver=ODBC+Driver+17+for+SQL+Server&"
-    f"Trusted_Connection=yes"
-)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = CONNECTION_STRING
+# Configure database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///names.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
 
-# --- Your models and routes go here as before ---
-
-class User(db.Model):
+# Define the model
+class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
 
-@app.route('/')
+# Create the database
+with app.app_context():
+    db.create_all()
+
+# Home route - asks for name
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return "Welcome to the Flask App with SQL Server!"   
+    if request.method == 'POST':
+        name = request.form['name']
+        if name:
+            new_person = Person(name=name)
+            db.session.add(new_person)
+            db.session.commit()
+            return redirect(url_for('show_names'))
 
-if __name__ == "__main__":
-    app.run(debug=True) 
-#testing done
+    return render_template_string('''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Enter Name</title>
+        </head>
+        <body>
+            <h2>Enter a Name</h2>
+            <form method="POST">
+                <input type="text" name="name" placeholder="Enter your name" required>
+                <button type="submit">Submit</button>
+            </form>
+        </body>
+        </html>
+    ''')
+
+# Show all names
+@app.route('/names')
+def show_names():
+    people = Person.query.all()
+    return render_template_string('''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Stored Names</title>
+        </head>
+        <body>
+            <h2>List of Stored Names</h2>
+            <table border="1">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+                {% for person in people %}
+                <tr>
+                    <td>{{ person.id }}</td>
+                    <td>{{ person.name }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <br>
+            <a href="{{ url_for('index') }}">Add Another Name</a>
+        </body>
+        </html>
+    ''', people=people)
+
+if __name__ == '__main__':
+    app.run(debug=True)
